@@ -9,7 +9,7 @@ spec:
      matchLabels:
        app: sa-ml
   replicas: 1
-  minReadySeconds: 120
+  minReadySeconds: 300
   strategy:
     type: RollingUpdate
     rollingUpdate: 
@@ -20,10 +20,37 @@ spec:
       labels:
         app: sa-ml
     spec:
-      containers:
-        - image: m46f/mlops-demo-sa-ml:latest
+      volumes:
+        - name: model-volume
+          emptyDir: {}
+        - name: google-cloud-keys
+          secret:
+            secretName: google-app-key
+      initContainers:
+        - name: model-init
+          image: m46f/mlops-demo-ml-helper:latest
           imagePullPolicy: Always
-          name: sa-ml
+          volumeMounts:
+            - name: model-volume
+              mountPath: "/models"
+            - name: google-cloud-keys
+              mountPath: /var/secrets/google
+              readOnly: true
+          env:
+            - name: SRC
+              value: "gs://morgana-mlops/demo/text-clf.joblib"
+            - name: DEST
+              value: "models" 
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/secret.json
+
+      containers:
+        - name: sa-ml
+          image: m46f/mlops-demo-sa-ml:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: model-volume
+              mountPath: /opt/mlserver/models
           ports:
             - containerPort: 8080
           resources:

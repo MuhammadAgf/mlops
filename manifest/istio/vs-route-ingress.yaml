@@ -6,14 +6,18 @@ spec:
   hosts:
   - "*"
   gateways:
-  - http-gateway                      # 1
+  - http-gateway
   http:
   - match:
     - uri:
-        prefix: /
+        prefix: /be-service/
+    - uri:
+        prefix: /be-service
+    rewrite:
+        uri: /
     route:
     - destination:
-        host: sa-be-svc             # 2
+        host: sa-be-svc.demo.svc.cluster.local
         port:
           number: 80
 

@@ -139,5 +139,7 @@ ENV/
 # mkdocs documentation
 /site
 
+# model file
+*.joblib
 # mypy
 .mypy_cache/
