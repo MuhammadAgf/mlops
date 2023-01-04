@@ -14,4 +14,4 @@ build: clean
 	docker build -t ${DOCKER_USER}/mlops-demo-sa-be:$(GIT_DIGEST) -t ${DOCKER_USER}/mlops-demo-sa-be:latest -f Dockerfile .
 
 run_image:
-	docker run -it --rm mlops-demo-be
+	docker run -it --rm ${DOCKER_USER}/mlops-demo-sa-be
