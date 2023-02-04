@@ -10,10 +10,12 @@ import os
 MODEL_URL = os.getenv("MODEL_URL", "http://localhost")
 #http://localhost:8080/v2/models/content-type-example/infer
 
+
 class Query(BaseModel):
     text: str
+
 class Response(BaseModel):
-    resp: str
+    predicted: int
 
 @app.post("/predict")
 async def pred(q: Query) -> Response:
@@ -27,7 +29,7 @@ async def pred(q: Query) -> Response:
            }
         ]
     }
-    return Response(resp=requests.post(f"{MODEL_URL}:8080/v2/models/text-clf/versions/v0.1.0/infer", json=payload).text)
+    return Response(predicted=requests.post(f"{MODEL_URL}:8080/v2/models/text-clf/versions/v0.1.0/infer", json=payload).json()['outputs'][0]['data'][0])
 
 @app.get("/")
 async def root():
