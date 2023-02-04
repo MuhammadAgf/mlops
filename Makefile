@@ -1,3 +1,6 @@
+redeploy:
+	kubectl rollout restart deployment/$(svc) -n $(ns)
+	kubectl rollout status deployment $(svc) -n $(ns)
 
 deploy:
 	cd services/$(svc) && make build
